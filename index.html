@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Quiz</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .incorrect {
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+      color: #721c24;
+    }
+  </style>
+</head>
+<body>
+<div class="container my-5">
+  <h1 class="text-center mb-4">Business Quantification Quiz</h1>
+  <form id="quizForm">
+    <div id="quizQuestions"></div>
+    <div class="text-center mt-4">
+      <button type="submit" class="btn btn-primary">Submit Quiz</button>
+    </div>
+  </form>
+  <div id="result" class="mt-5"></div>
+</div>
+
+<script>
+const questions = [
+  { question: "Which of the following is NOT a benefit of a strategic business plan?", options: ["Guarantees success", "Provides direction", "Ensures goal attainment", "Adds customer value"], answer: 0 },
+  { question: "Forecasting uses what type of data to make future predictions?", options: ["Only future data", "Customer preferences", "Past and present data", "None of the above"], answer: 2 },
+  { question: "A high debt ratio implies lower financial risk for the company.", options: ["True", "False"], answer: 1 },
+  { question: "Which of the following factors affects sales forecasting?", options: ["Competitors", "Seasonality", "Economic climate", "All of the above"], answer: 3 },
+  { question: "What is the formula for markup?", options: ["Selling Price – Cost", "Cost × Desired Markup", "Revenue ÷ Profit", "Profit × Cost"], answer: 1 },
+  { question: "Events like a pandemic can both negatively and positively affect business forecasting.", options: ["True", "False"], answer: 0 },
+  { question: "What is the formula for Return on Investment (ROI)?", options: ["Net Income ÷ Total Assets", "Net Income ÷ Average Assets", "Net Income ÷ (Average Assets / 2)", "Revenue ÷ Net Income"], answer: 2 },
+  { question: "Which of the following is a liquidity ratio?", options: ["ROI", "Quick Ratio", "Stockholder’s Ratio", "Operating Income Ratio"], answer: 1 },
+  { question: "Which ratio indicates the company’s ability to pay off short-term obligations without relying on inventory?", options: ["Current Ratio", "Quick Ratio", "Debt-to-Equity Ratio", "ROI"], answer: 1 },
+  { question: "High current ratios always mean strong financial health.", options: ["True", "False"], answer: 1 },
+  { question: "What is the markup on a summer dress costing ₱83.00 with a 50% markup rate?", options: ["₱124.50", "₱41.50", "₱83.00", "₱50.00"], answer: 1 },
+  { question: "What is the selling price of ripped jeans costing ₱215.00 with 50% markup?", options: ["₱320.00", "₱215.50", "₱322.50", "₱430.00"], answer: 2 },
+  { question: "What is the forecasted daily revenue from 20 summer dresses sold at ₱124.50 each?", options: ["₱2,490.00", "₱2,500.00", "₱2,415.00", "₱2,420.00"], answer: 0 },
+  { question: "What is the projected monthly revenue for ripped jeans selling 16 units per day at ₱322.50 each?", options: ["₱154,800.00", "₱148,800.00", "₱153,800.00", "₱160,000.00"], answer: 0 },
+  { question: "What is the projected annual revenue for summer dresses sold at 20 units daily?", options: ["₱900,000.00", "₱930,000.00", "₱908,850.00", "₱1,000,000.00"], answer: 2 },
+  { question: "What is the formula for Debt Ratio?", options: ["Total Equity ÷ Total Assets", "Total Liabilities ÷ Total Assets", "Total Liabilities ÷ Total Equity", "Net Income ÷ Assets"], answer: 1 },
+  { question: "Calculate ROI: Net Income = ₱30,000, Beginning Assets = ₱100,000, Ending Assets = ₱25,000", options: ["0.45", "0.48", "0.50", "0.55"], answer: 1 },
+  { question: "Which of the following indicates higher leverage?", options: ["High Debt-to-Equity Ratio", "High Current Ratio", "Low Quick Ratio", "High ROI"], answer: 0 },
+  { question: "Stockholder’s Ratio = Total Equity ÷ Total Liabilities.", options: ["True", "False"], answer: 1 },
+  { question: "Company has ₱90,000 in quick assets and ₱40,000 in current liabilities. What is the quick ratio?", options: ["2.0", "2.5", "2.25", "3.0"], answer: 2 },
+  { question: "Which of the following is a primary activity in the Value Chain Model?", options: ["Human Resources", "Technology Development", "Outbound Logistics", "Procurement"], answer: 2 },
+  { question: "Which of the following is NOT part of the 8 Rs of HR?", options: ["Retooling", "Recycling", "Reinvesting", "Resonating"], answer: 2 },
+  { question: "The 'Routing' R in HR means assessing a person’s long-term potential across functions.", options: ["True", "False"], answer: 0 },
+  { question: "What HR function deals with evaluating employee performance?", options: ["Recruiting", "Reviewing", "Resonating", "Recycling"], answer: 1 },
+  { question: "Which HR R involves shifting employee mindset to align with the company’s new direction?", options: ["Recycling", "Retaining", "Retooling", "Routing"], answer: 2 },
+  { question: "What component of the Business Model Canvas defines how a business earns money?", options: ["Key Activities", "Revenue Streams", "Value Proposition", "Channels"], answer: 1 },
+  { question: "The Cost Structure component helps businesses optimize spending.", options: ["True", "False"], answer: 0 },
+  { question: "Which permit certifies that your business name is legally registered?", options: ["SEC Registration", "DTI Certificate", "Mayor’s Permit", "Barangay Clearance"], answer: 1 },
+  { question: "What government agency issues the TIN for businesses in the Philippines?", options: ["DTI", "SEC", "BIR", "SSS"], answer: 2 },
+  { question: "Which of the following is needed only if the business has employees?", options: ["Barangay Clearance", "SSS Employer Registration", "DTI Certificate", "Mayor’s Permit"], answer: 1 }
+];
+
+function loadQuiz() {
+  const container = document.getElementById("quizQuestions");
+  questions.forEach((q, index) => {
+    const card = document.createElement("div");
+    card.className = "card mb-3 p-3";
+    card.innerHTML = `<h5>${index + 1}. ${q.question}</h5>` +
+      q.options.map((opt, i) => `
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q${index}" id="q${index}opt${i}" value="${i}">
+          <label class="form-check-label" for="q${index}opt${i}">${opt}</label>
+        </div>
+      `).join("");
+    container.appendChild(card);
+  });
+}
+
+function showResults(event) {
+  event.preventDefault();
+  let score = 0;
+  const resultDiv = document.getElementById("result");
+  resultDiv.innerHTML = "";
+
+  questions.forEach((q, index) => {
+    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+    const card = document.querySelectorAll(".card")[index];
+
+    if (selected) {
+      if (parseInt(selected.value) === q.answer) {
+        score++;
+      } else {
+        card.classList.add("incorrect");
+      }
+    } else {
+      card.classList.add("incorrect");
+    }
+  });
+
+  resultDiv.innerHTML = `<div class="alert alert-info"><strong>Score:</strong> ${score}/${questions.length}</div>`;
+}
+
+loadQuiz();
+document.getElementById("quizForm").addEventListener("submit", showResults);
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
